@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listview_data/model/movie.dart';
+import 'package:listview_data/ui/movie_ui/movie_ui.dart';
 
 class MovieListView extends StatelessWidget {
   final List<Movie> movieList = Movie.getMovies();
@@ -24,7 +25,7 @@ class MovieListView extends StatelessWidget {
         //centerTitle: true,
         backgroundColor: Colors.blueGrey.shade900,
       ),
-      backgroundColor: Colors.blueGrey.shade400,
+      backgroundColor: Colors.blueGrey.shade900,
       body: ListView.builder(
           itemCount: movieList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -86,26 +87,48 @@ Widget movieCard(Movie movie, BuildContext context) {
           color: Colors.black45,
           child: Padding(
             padding: EdgeInsets.only(top: 8, bottom: 8, left: 54),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(movie.title),
-                    Text("Ratting : ${movie.imdbrating} /10"),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text("Released: ${movie.released}"),
-                    Text(movie.runtime),
-                    Text(movie.rated),
-                  ],
-                )
-              ],
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          movie.title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        "Ratting : ${movie.imdbrating} /10",
+                        style: mainTextStyle(),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text("Released: ${movie.released}",
+                          style: mainTextStyle()),
+                      Text(
+                        movie.runtime,
+                        style: mainTextStyle(),
+                      ),
+                      Text(
+                        movie.rated,
+                        style: mainTextStyle(),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -120,6 +143,13 @@ Widget movieCard(Movie movie, BuildContext context) {
                           movie: movie,
                         )))
           });
+}
+
+TextStyle mainTextStyle() {
+  return TextStyle(
+    fontSize: 15,
+    color: Colors.grey,
+  );
 }
 
 Widget movieImage(String imageUrl) {
@@ -144,20 +174,39 @@ class MovieListViewDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          //title: Text("Movies $movieName"), also worksss fine
-          title: Text("Movies"),
-          backgroundColor: Colors.blueGrey.shade900,
-        ),
-        body: Container(
-          child: Center(
-            child: RaisedButton(
-              child: Text("${this.movie.director}"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+      appBar: AppBar(
+        //title: Text("Movies $movieName"), also worksss fine
+        title: Text("Movies"),
+        backgroundColor: Colors.blueGrey.shade900,
+      ),
+      body: ListView(
+        children: [
+          MovieDetailsThumbnail(
+            thumbnail: movie.images[0],
           ),
-        ));
+          MovieDetailsHeaderWithPoster(
+            movie: movie,
+          ),
+          HorizontalLine(),
+          MovieDetailsCast(
+            movie: movie,
+          ),
+          HorizontalLine(),
+          MovieDetailsExtraPosters(
+            posters: movie.images,
+          )
+        ],
+      ),
+      // body: Container(
+      //   child: Center(
+      //     child: RaisedButton(
+      //       child: Text("${this.movie.director}"),
+      //       onPressed: () {
+      //         Navigator.pop(context);
+      //       },
+      //     ),
+      //   ),
+      // )
+    );
   }
 }
